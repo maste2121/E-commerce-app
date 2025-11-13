@@ -1,0 +1,93 @@
+import 'package:asrat/utlits/app_textstyle.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+
+class CustomTextfields extends StatefulWidget {
+  final String label;
+  final IconData perfixIcon;
+  final TextInputType keyboardType;
+  final bool ispassword;
+  final TextEditingController? controller;
+  final String? Function(String?)? validator;
+  final void Function(String)? onChange;
+  const CustomTextfields({
+    super.key,
+    required this.label,
+    required this.perfixIcon,
+    this.keyboardType = TextInputType.text,
+    this.ispassword = false,
+    this.controller,
+    this.validator,
+    this.onChange,
+  });
+
+  @override
+  State<CustomTextfields> createState() => _CustomTextfieldsState();
+}
+
+class _CustomTextfieldsState extends State<CustomTextfields> {
+  bool _obscureText = true;
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return TextFormField(
+      controller: widget.controller,
+      obscureText: widget.ispassword && _obscureText,
+      keyboardType: widget.keyboardType,
+      validator: widget.validator,
+      onChanged: widget.onChange,
+      style: AppTextstyle.withColor(
+        AppTextstyle.bodymedium,
+        Theme.of(context).textTheme.bodyLarge!.color!,
+      ),
+      decoration: InputDecoration(
+        labelText: widget.label,
+        labelStyle: AppTextstyle.withColor(
+          AppTextstyle.bodymedium,
+          isDark ? Colors.grey[400]! : Colors.grey[600]!,
+        ),
+        prefix: Icon(
+          widget.perfixIcon,
+          color: isDark ? Colors.grey[400] : Colors.grey[600],
+        ),
+        suffix:
+            widget.ispassword
+                ? IconButton(
+                  onPressed: () {
+                    setState(() {
+                      _obscureText = !_obscureText;
+                    });
+                  },
+                  icon: Icon(
+                    _obscureText ? Icons.visibility_off : Icons.visibility,
+                  ),
+                )
+                : null,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(
+            color: isDark ? Colors.grey[700]! : Colors.grey[300]!,
+          ),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(
+            color: isDark ? Colors.grey[700]! : Colors.grey[300]!,
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Theme.of(context).primaryColor),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Theme.of(context).colorScheme.error),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Theme.of(context).colorScheme.error),
+        ),
+      ),
+    );
+  }
+}
