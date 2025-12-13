@@ -1,0 +1,60 @@
+############################
+# ENVIRONMENT FILES (SECRETS)
+############################
+.env
+backend/.env
+
+############################
+# NODE.JS
+############################
+node_modules/
+backend/node_modules/
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+############################
+# FLUTTER / DART
+############################
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+build/
+coverage/
+
+# Android
+android/.gradle/
+android/app/build/
+
+# iOS
+ios/Pods/
+ios/.symlinks/
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+
+############################
+# UPLOADS (OPTIONAL)
+############################
+backend/uploads/
+!backend/uploads/.gitkeep
+
+############################
+# IDE / EDITOR
+############################
+.vscode/
+.idea/
+*.iml
+
+############################
+# OS FILES
+############################
+.DS_Store
+Thumbs.db
+
+############################
+# LOG FILES
+############################
+logs/
+*.log
