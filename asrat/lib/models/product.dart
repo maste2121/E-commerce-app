@@ -59,10 +59,8 @@ class Product {
           json['oldPrice'] != null
               ? double.tryParse(json['oldPrice'].toString())
               : null,
-      imagUrl:
-          json['imagUrl'] != null
-              ? 'http://10.0.2.2:8080/${json['imagUrl'].replaceAll("\\", "/")}'
-              : '',
+      imagUrl: json['imagUrl'] ?? '',
+
       isFavorite: (json['isFavorite'] ?? 0) == 1,
       category: json['category'] ?? '',
       createdAt: DateTime.parse(json['created_at']),

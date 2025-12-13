@@ -3,9 +3,7 @@ import 'dart:convert';
 import '../models/product.dart';
 
 class ProductRepository {
-  // ⚠️ Use 'localhost' if running on Windows desktop,
-  // or use your PC IP (e.g., http://10.0.2.2:8080) if running on Android emulator
-  final String baseUrl = 'http://10.161.171.184:8080';
+  final String baseUrl = 'http://10.161.163.14:8080';
 
   Future<List<Product>> fetchProducts() async {
     try {

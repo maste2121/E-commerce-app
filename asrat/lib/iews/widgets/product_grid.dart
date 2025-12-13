@@ -1,4 +1,5 @@
 import 'package:asrat/controllers/product_controller.dart';
+import 'package:asrat/iews/widgets/home_controller.dart';
 import 'package:asrat/iews/widgets/product_card.dart';
 import 'package:asrat/iews/widgets/product_details_screen.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,11 @@ class ProductGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final HomeController homeController = Get.find<HomeController>();
+    final items = homeController.filteredItems;
+    if (items.isEmpty) {
+      return const Center(child: Text('No items found.'));
+    }
     // ✅ Fetch products only once when widget is first displayed
     if (controller.products.isEmpty) {
       controller.fetchProducts();

@@ -20,7 +20,7 @@ class OrderController extends GetxController {
     // Change IP below to your local machine IP when testing on Android phone
     baseUrl =
         Platform.isAndroid
-            ? 'http://10.161.171.184:8080' // use your machine’s Wi-Fi IPv4
+            ? 'http://10.161.163.14:8080' // use your machine’s Wi-Fi IPv4
             : 'http://localhost:8080';
 
     fetchOrders();

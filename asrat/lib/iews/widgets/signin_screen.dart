@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:asrat/controllers/auth_controller.dart';
 import 'package:asrat/iews/widgets/admin_dashboard_page.dart';
 import 'package:asrat/iews/widgets/custom_textfields.dart';
 import 'package:asrat/iews/widgets/forgot_password_screen.dart';
@@ -23,9 +24,11 @@ class SigninScreen extends StatelessWidget {
     final email = _emailcontroller.text.trim();
     final password = _passwordcontroller.text.trim();
 
+    final authController = Get.find<AuthController>(); // ✅ get the controller
+
     try {
       final response = await http.post(
-        Uri.parse('http://10.161.171.184:8080/signin'),
+        Uri.parse('http://10.161.163.14:8080/signin'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'email': email, 'password': password}),
       );
@@ -33,7 +36,11 @@ class SigninScreen extends StatelessWidget {
       final data = jsonDecode(response.body);
 
       if (response.statusCode == 200 && data['success'] == true) {
-        // ✅ Store JWT token and role locally
+        // ✅ Update AuthController with user data
+        authController.updateUser(data);
+        // authController._setLoggedIn(true); // mark as logged in
+
+        // ✅ Store token & role locally if needed
         final storage = GetStorage();
         storage.write('userToken', data['token']);
         storage.write('userRole', data['user']['role'] ?? 'user');
@@ -44,7 +51,7 @@ class SigninScreen extends StatelessWidget {
           snackPosition: SnackPosition.BOTTOM,
         );
 
-        // Navigate based on role
+        // Navigate based on role (keep your current flow)
         final userRole = data['user']['role'] ?? 'user';
         if (userRole == 'admin') {
           Get.offAll(() => AdminDashboard());

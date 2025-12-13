@@ -20,7 +20,6 @@ class SignUpScreen extends StatelessWidget {
 
   final _formKey = GlobalKey<FormState>();
   String _selectedRole = 'user';
-
   Future<void> _signupUser(BuildContext context) async {
     if (!_formKey.currentState!.validate()) return;
 
@@ -29,25 +28,27 @@ class SignUpScreen extends StatelessWidget {
     final password = _passwordcontroller.text.trim();
     final role = _selectedRole;
 
+    final authController = Get.find<AuthController>(); // Get the controller
+
     try {
       final response = await http.post(
-        Uri.parse('http://10.161.171.184:8080/signup'),
+        Uri.parse('http://10.161.163.14:8080/signup'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'name': name,
           'email': email,
           'password': password,
           'role': role,
-          // 'avatarUrl': null, // optional, if you have image upload feature later
         }),
       );
 
       final data = jsonDecode(response.body);
 
       if (response.statusCode == 200 && data['success'] == true) {
-        // Store role locally for future use
-        final storage = GetStorage();
-        storage.write('userRole', role);
+        // ✅ Update AuthController user data
+        authController.updateUser(data);
+        authController.setFirstTimeDone();
+        // authController._setLoggedIn(true); // Optional: mark as logged in
 
         Get.snackbar(
           'Success',
@@ -55,7 +56,7 @@ class SignUpScreen extends StatelessWidget {
           snackPosition: SnackPosition.BOTTOM,
         );
 
-        // Navigate based on role
+        // Navigate based on role (keep your original navigation)
         if (role == 'admin') {
           Get.offAll(() => AdminDashboard());
         } else {
@@ -185,24 +186,7 @@ class SignUpScreen extends StatelessWidget {
                     return null;
                   },
                 ),
-                const SizedBox(height: 16),
 
-                DropdownButtonFormField<String>(
-                  value: _selectedRole,
-                  decoration: InputDecoration(
-                    labelText: 'Select Role',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  items: const [
-                    DropdownMenuItem(value: 'user', child: Text('User')),
-                    DropdownMenuItem(value: 'admin', child: Text('Admin')),
-                  ],
-                  onChanged: (value) {
-                    if (value != null) _selectedRole = value;
-                  },
-                ),
                 const SizedBox(height: 16),
 
                 SizedBox(

@@ -14,7 +14,7 @@ class UserController extends GetxController {
     super.onInit();
     // Adjust base URL for emulator or desktop
     if (Platform.isAndroid) {
-      baseUrl = 'http://10.161.171.184:8080';
+      baseUrl = 'http://10.161.163.14:8080';
     } else {
       baseUrl = 'http://localhost:8080';
     }

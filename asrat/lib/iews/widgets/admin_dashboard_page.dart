@@ -3,9 +3,10 @@ import 'package:asrat/controllers/auth_controller.dart';
 import 'package:asrat/controllers/order_controller.dart';
 import 'package:asrat/controllers/product_controller.dart';
 import 'package:asrat/controllers/user_controller.dart';
+import 'package:asrat/iews/admin_management/admin_profile_page.dart';
 import 'package:asrat/iews/admin_management/orders_management_page.dart';
+import 'package:asrat/iews/widgets/account_screen.dart';
 import 'package:asrat/iews/widgets/notification_schreen.dart';
-import 'package:asrat/iews/widgets/sign_up_screen.dart';
 import 'package:asrat/iews/widgets/signin_screen.dart';
 import 'package:asrat/models/product.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -1315,7 +1316,9 @@ class _AdminDashboardState extends State<AdminDashboard> {
       case 4:
         return _buildInventoryOverview(); // Maps to 'Inventory'
       case 5:
-        return _buildSalesOverview(); // Maps to '$ Sales'
+        return _buildSalesOverview();
+      case 6:
+        return AdminProfilePage();
       default:
         return const Center(
           child: Text('Welcome to Admin Dashboard! Select a menu item.'),
@@ -1388,7 +1391,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
           _drawerItem(Icons.people, 'Customers', 3),
           _drawerItem(Icons.inventory, 'Inventory', 4),
           _drawerItem(Icons.trending_up, '\$ Sales', 5),
-
+          _drawerItem(Icons.person, 'Profile', 6),
           const SizedBox(height: 50),
 
           // Logout Section

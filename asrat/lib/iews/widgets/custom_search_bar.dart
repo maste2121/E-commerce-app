@@ -1,5 +1,7 @@
+import 'package:asrat/iews/widgets/home_controller.dart';
 import 'package:asrat/utlits/app_textstyle.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class CustomSearchBar extends StatelessWidget {
   const CustomSearchBar({super.key});
@@ -7,9 +9,13 @@ class CustomSearchBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final HomeController homeController = Get.put(HomeController());
     return Padding(
       padding: EdgeInsets.all(16),
       child: TextField(
+        onChanged: (value) {
+          homeController.searchQuery.value = value;
+        },
         style: AppTextstyle.withColor(
           AppTextstyle.buttonmedium,
           Theme.of(context).textTheme.bodyLarge?.color ?? Colors.black,

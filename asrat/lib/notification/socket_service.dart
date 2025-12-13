@@ -11,7 +11,7 @@ class SocketService extends GetxService {
 
     // Initialize socket immediately
     socket = IO.io(
-      'http://10.161.171.184:8080',
+      'http://10.161.163.14:8080',
       IO.OptionBuilder()
           .setTransports(['websocket'])
           .disableAutoConnect() // manual connect
