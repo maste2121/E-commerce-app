@@ -1,5 +1,4 @@
 const db = require("../config/db");
-
 const SERVER_URL = "http://10.161.160.145:8080";
 
 exports.getProducts = async (_, res) => {
@@ -23,28 +22,21 @@ exports.createProduct = async (req, res) => {
 
 exports.updateProduct = async (req, res) => {
   const { id } = req.params;
-  const {
-    name,
-    description,
-    price,
-    oldPrice,
-    category,
-    imagUrl: oldImage,
-  } = req.body;
+  const { name, description, price, oldPrice, category, imagUrl } = req.body;
 
-  const imagUrl = req.file
+  const finalImage = req.file
     ? `${SERVER_URL}/uploads/${req.file.filename}`
-    : oldImage;
+    : imagUrl;
 
   const [result] = await db.query(
     "UPDATE products SET name=?,description=?,price=?,oldPrice=?,imagUrl=?,category=? WHERE id=?",
-    [name, description, price, oldPrice, imagUrl, category, id]
+    [name, description, price, oldPrice, finalImage, category, id]
   );
 
   if (!result.affectedRows)
     return res.status(404).json({ message: "Product not found" });
 
-  res.json({ success: true, imagUrl });
+  res.json({ success: true, imagUrl: finalImage });
 };
 
 exports.deleteProduct = async (req, res) => {
@@ -55,10 +47,19 @@ exports.deleteProduct = async (req, res) => {
 };
 
 exports.toggleFavorite = async (req, res) => {
-  const isFavorite = req.body.isFavorite ? 1 : 0;
-  await db.query("UPDATE products SET isFavorite=? WHERE id=?", [
-    isFavorite,
-    req.params.id,
-  ]);
+  let { isFavorite } = req.body;
+
+  if (isFavorite === 1) isFavorite = true;
+  else if (isFavorite === 0) isFavorite = false;
+  else return res.status(400).json({ error: "isFavorite must be 1 or 0" });
+
+  const [result] = await db.query(
+    "UPDATE products SET isFavorite=? WHERE id=?",
+    [isFavorite ? 1 : 0, req.params.id]
+  );
+
+  if (!result.affectedRows)
+    return res.status(404).json({ message: "Product not found" });
+
   res.json({ success: true });
 };

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -9,7 +10,9 @@ import 'package:image_picker/image_picker.dart';
 class AuthController extends GetxController {
   final _storage = GetStorage();
 
-  // Reactive variables
+  // =====================
+  // Reactive state
+  // =====================
   final RxBool _isFirstTime = true.obs;
   final RxBool _loggedIn = false.obs;
   final Rx<Map<String, dynamic>?> _user = Rx<Map<String, dynamic>?>(null);
@@ -25,13 +28,19 @@ class AuthController extends GetxController {
 
   late final String baseUrl;
 
+  // =====================
+  // Init
+  // =====================
   @override
   void onInit() {
     super.onInit();
+
+    // Android emulator must NOT use localhost
     baseUrl =
         Platform.isAndroid
             ? "http://10.161.163.14:8080"
             : "http://localhost:8080";
+
     _loadSavedState();
   }
 
@@ -40,17 +49,21 @@ class AuthController extends GetxController {
     _loggedIn.value = _storage.read('loggedIn') ?? false;
 
     final savedUser = _storage.read('user');
-    if (savedUser != null) _user.value = Map<String, dynamic>.from(savedUser);
+    if (savedUser != null) {
+      _user.value = Map<String, dynamic>.from(savedUser);
+    }
 
-    // Load avatar from storage separately
     final savedAvatar = _storage.read('avatar');
-    if (savedAvatar != null) {
-      final updatedUser = Map<String, dynamic>.from(_user.value ?? {});
+    if (savedAvatar != null && _user.value != null) {
+      final updatedUser = Map<String, dynamic>.from(_user.value!);
       updatedUser['avatar'] = savedAvatar;
       _user.value = updatedUser;
     }
   }
 
+  // =====================
+  // Helpers
+  // =====================
   void setFirstTimeDone() {
     _isFirstTime.value = false;
     _storage.write('isFirstTime', false);
@@ -65,9 +78,21 @@ class AuthController extends GetxController {
     final userData = data['user'] ?? data;
     _user.value = Map<String, dynamic>.from(userData);
     _storage.write('user', userData);
-    _storage.write('userRole', userData['role'] ?? "user");
+    _storage.write('userRole', userData['role'] ?? 'user');
   }
 
+  void _ensureJson(http.Response response) {
+    final ct = response.headers['content-type'] ?? '';
+    if (!ct.contains('application/json')) {
+      throw Exception('Server returned non-JSON response');
+    }
+  }
+
+  // =====================
+  // AUTH API
+  // =====================
+
+  /// POST /users/signup
   Future<bool> signup(
     String name,
     String email,
@@ -76,73 +101,88 @@ class AuthController extends GetxController {
   ) async {
     try {
       final response = await http.post(
-        Uri.parse("$baseUrl/signup"),
-        headers: {"Content-Type": "application/json"},
+        Uri.parse('$baseUrl/users/signup'),
+        headers: const {"Content-Type": "application/json"},
         body: jsonEncode({
-          "name": name,
-          "email": email,
-          "password": password,
-          "role": role,
+          'name': name,
+          'email': email,
+          'password': password,
+          'role': role,
         }),
       );
 
+      _ensureJson(response);
       final data = jsonDecode(response.body);
-      if (response.statusCode == 200 && data["success"] == true) {
+
+      if (response.statusCode == 200 && data['success'] == true) {
         updateUser(data);
+        _setLoggedIn(true);
         return true;
       } else {
-        Get.snackbar("Signup Failed", data["error"] ?? "Unknown error");
+        Get.snackbar('Signup Failed', data['error'] ?? 'Unknown error');
         return false;
       }
     } catch (e) {
-      Get.snackbar("Signup Error", e.toString());
+      Get.snackbar('Signup Error', e.toString());
       return false;
     }
   }
 
+  /// POST /users/signin
   Future<bool> loginWithBackend(String email, String password) async {
     try {
       final response = await http.post(
-        Uri.parse("$baseUrl/signin"),
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode({"email": email, "password": password}),
+        Uri.parse('$baseUrl/users/signin'),
+        headers: const {"Content-Type": "application/json"},
+        body: jsonEncode({'email': email, 'password': password}),
       );
 
+      _ensureJson(response);
       final data = jsonDecode(response.body);
-      if (response.statusCode == 200 && data["success"] == true) {
+
+      if (response.statusCode == 200 && data['success'] == true) {
         _setLoggedIn(true);
         updateUser(data);
         return true;
       } else {
-        Get.snackbar("Login Failed", data["error"] ?? "Invalid credentials");
+        Get.snackbar('Login Failed', data['error'] ?? 'Invalid credentials');
         return false;
       }
     } catch (e) {
-      Get.snackbar("Login Error", e.toString());
+      Get.snackbar('Login Error', e.toString());
       return false;
     }
   }
 
+  /// GET /users/:id
   Future<void> fetchCurrentUser() async {
     final savedUser = _storage.read('user');
-    if (savedUser != null) _user.value = Map<String, dynamic>.from(savedUser);
+    if (savedUser != null) {
+      _user.value = Map<String, dynamic>.from(savedUser);
+    }
+
     if (userId == 0) return;
 
     try {
       final response = await http.get(
-        Uri.parse("$baseUrl/user/$userId"),
-        headers: {"Content-Type": "application/json"},
+        Uri.parse('$baseUrl/users/$userId'),
+        headers: const {"Content-Type": "application/json"},
       );
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        if (data["success"] == true && data["user"] != null) updateUser(data);
+
+      _ensureJson(response);
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode == 200 && data['success'] == true) {
+        updateUser(data);
       }
     } catch (e) {
-      print("❌ Fetch user error: $e");
+      debugPrint('❌ Fetch user error: $e');
     }
   }
 
-  /// Avatar functions
+  // =====================
+  // AVATAR (LOCAL ONLY)
+  // =====================
 
   Future<void> updateAvatar(File imageFile) async {
     final bytes = await imageFile.readAsBytes();
@@ -151,36 +191,43 @@ class AuthController extends GetxController {
     final updatedUser = Map<String, dynamic>.from(_user.value ?? {});
     updatedUser['avatar'] = base64String;
 
-    _storage.write('avatar', base64String); // persist separately
+    _storage.write('avatar', base64String);
     updateUser(updatedUser);
   }
 
   ImageProvider getAvatarImage() {
     final base64String = _user.value?['avatar'] ?? '';
+
     if (base64String.isEmpty) {
-      // Default person icon
       return const AssetImage('assets/images/default_person.png');
-      // Or you can use Flutter Icon widget in UI instead of image
-    } else {
-      try {
-        return MemoryImage(base64Decode(base64String));
-      } catch (_) {
-        return const AssetImage('assets/images/default_person.png');
-      }
+    }
+
+    try {
+      return MemoryImage(base64Decode(base64String));
+    } catch (_) {
+      return const AssetImage('assets/images/default_person.png');
     }
   }
 
   Future<void> pickAvatarImage() async {
     final picker = ImagePicker();
     final picked = await picker.pickImage(source: ImageSource.gallery);
-    if (picked != null) await updateAvatar(File(picked.path));
+
+    if (picked != null) {
+      await updateAvatar(File(picked.path));
+    }
   }
 
+  // =====================
+  // LOGOUT
+  // =====================
   void logout() {
     _loggedIn.value = false;
     _user.value = null;
-    // Keep avatar persistent
+
     _storage.remove('loggedIn');
+    _storage.remove('user');
     _storage.remove('userRole');
+    // avatar intentionally preserved
   }
 }

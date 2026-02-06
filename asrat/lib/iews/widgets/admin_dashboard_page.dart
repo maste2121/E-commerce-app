@@ -5,7 +5,6 @@ import 'package:asrat/controllers/product_controller.dart';
 import 'package:asrat/controllers/user_controller.dart';
 import 'package:asrat/iews/admin_management/admin_profile_page.dart';
 import 'package:asrat/iews/admin_management/orders_management_page.dart';
-import 'package:asrat/iews/widgets/account_screen.dart';
 import 'package:asrat/iews/widgets/notification_schreen.dart';
 import 'package:asrat/iews/widgets/signin_screen.dart';
 import 'package:asrat/models/product.dart';

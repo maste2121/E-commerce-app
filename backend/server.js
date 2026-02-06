@@ -8,6 +8,9 @@ const socketService = initSocket(server);
 
 orderController.attachSocket(socketService);
 
-server.listen(8080, "0.0.0.0", () => {
-  console.log("🚀 Server running on port 8080");
+// CHANGE THIS PART:
+const PORT = process.env.PORT || 10000; // Use Render's port or default to 10000
+
+server.listen(PORT, "0.0.0.0", () => {
+  console.log(`🚀 Server running on port ${PORT}`);
 });

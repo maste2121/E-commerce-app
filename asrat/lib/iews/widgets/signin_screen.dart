@@ -28,7 +28,7 @@ class SigninScreen extends StatelessWidget {
 
     try {
       final response = await http.post(
-        Uri.parse('http://10.161.163.14:8080/signin'),
+        Uri.parse('http://10.161.163.14:8080/users/signin'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'email': email, 'password': password}),
       );
