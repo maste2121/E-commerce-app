@@ -11,7 +11,7 @@ class SocketService extends GetxService {
 
     // Initialize socket immediately
     socket = IO.io(
-      'http://10.161.163.14:8080',
+      'https://e-commerce-app-api-hvdc.onrender.com',
       IO.OptionBuilder()
           .setTransports(['websocket'])
           .disableAutoConnect() // manual connect

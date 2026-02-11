@@ -3,7 +3,7 @@ import 'dart:convert';
 import '../models/product.dart';
 
 class ProductRepository {
-  final String baseUrl = 'http://10.161.163.14:8080';
+  final String baseUrl = "https://e-commerce-app-api-hvdc.onrender.com";
 
   Future<List<Product>> fetchProducts() async {
     try {

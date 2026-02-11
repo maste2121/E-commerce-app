@@ -15,9 +15,9 @@ class ProductController extends GetxController {
   void onInit() {
     super.onInit();
     if (Platform.isAndroid) {
-      baseUrl = 'http://10.161.163.14:8080';
+      baseUrl = "https://e-commerce-app-api-hvdc.onrender.com";
     } else {
-      baseUrl = 'http://localhost:8080';
+      baseUrl = "https://e-commerce-app-api-hvdc.onrender.com";
     }
     fetchProducts();
   }

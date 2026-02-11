@@ -32,7 +32,7 @@ class SignUpScreen extends StatelessWidget {
 
     try {
       final response = await http.post(
-        Uri.parse('http://10.161.163.14:8080/users/signup'),
+        Uri.parse('${authController.baseUrl}/users/signup'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'name': name,

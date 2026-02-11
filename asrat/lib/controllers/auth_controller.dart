@@ -36,10 +36,7 @@ class AuthController extends GetxController {
     super.onInit();
 
     // Android emulator must NOT use localhost
-    baseUrl =
-        Platform.isAndroid
-            ? "http://10.161.163.14:8080"
-            : "http://localhost:8080";
+    baseUrl = "https://e-commerce-app-api-hvdc.onrender.com";
 
     _loadSavedState();
   }

@@ -23,6 +23,7 @@ class SplashScreen extends StatelessWidget {
         Get.off(() => SigninScreen());
       }
     });
+
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -55,7 +56,7 @@ class SplashScreen extends StatelessWidget {
                       return Transform.scale(
                         scale: value,
                         child: Container(
-                          padding: EdgeInsets.all(24),
+                          padding: const EdgeInsets.all(24),
                           decoration: BoxDecoration(
                             color: Colors.white,
                             shape: BoxShape.circle,
@@ -91,7 +92,7 @@ class SplashScreen extends StatelessWidget {
                       );
                     },
                     child: Column(
-                      children: [
+                      children: const [
                         Text(
                           'FASHION',
                           style: TextStyle(
@@ -113,10 +114,10 @@ class SplashScreen extends StatelessWidget {
                       ],
                     ),
                   ),
-                  Positioned(
-                    bottom: 48,
-                    left: 0,
-                    right: 0,
+
+                  /// ✅ FIXED HERE (was Positioned → now Align)
+                  Align(
+                    alignment: Alignment.center,
                     child: TweenAnimationBuilder<double>(
                       tween: Tween(begin: 0.0, end: 1.0),
                       duration: const Duration(milliseconds: 1200),
@@ -138,6 +139,8 @@ class SplashScreen extends StatelessWidget {
                 ],
               ),
             ),
+
+            /// original Positioned (unchanged)
             Positioned(
               bottom: 48,
               left: 0,
@@ -181,13 +184,15 @@ class GridPainter extends CustomPainter {
   final Color color;
 
   GridPainter({required this.color});
+
   @override
   void paint(Canvas canvas, Size size) {
     final paint =
         Paint()
           ..color = color
           ..strokeWidth = 0.5;
-    final spacing = 20.0;
+
+    const spacing = 20.0;
     for (var i = 0.0; i < size.width; i += spacing) {
       canvas.drawLine(Offset(i, 0), Offset(i, size.height), paint);
     }
@@ -197,5 +202,5 @@ class GridPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDeletate) => false;
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
