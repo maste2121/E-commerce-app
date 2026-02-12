@@ -1,5 +1,5 @@
 const cloudinary = require("cloudinary").v2;
-const { CloudinaryStorage } = require("multer-storage-cloudinary"); // <--- Fixed this line
+const { CloudinaryStorage } = require("multer-storage-cloudinary"); // <-- MUST HAVE CURLY BRACES
 const multer = require("multer");
 
 // Configure Cloudinary
@@ -9,7 +9,7 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// Set up Storage
+// Create Storage
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
