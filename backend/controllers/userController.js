@@ -4,9 +4,19 @@ const jwt = require("jsonwebtoken");
 
 const JWT_SECRET = "12345678";
 
+// controllers/userController.js
+
 exports.getUsers = async (_, res) => {
-  const [users] = await db.query("SELECT id, name, email, role FROM users");
-  res.json({ success: true, users });
+  try {
+    const [users] = await db.query(
+      "SELECT id, name, email, role FROM users ORDER BY id DESC"
+    );
+    // Returning this way matches your signin/signup style
+    res.json({ success: true, users });
+  } catch (error) {
+    console.error("❌ getUsers Error:", error.message);
+    res.status(500).json({ success: false, error: error.message });
+  }
 };
 
 exports.signup = async (req, res) => {
