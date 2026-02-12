@@ -2,10 +2,19 @@ const router = require("express").Router();
 const upload = require("../middlewares/upload");
 const c = require("../controllers/productController");
 
-router.get("/products", c.getProducts);
-router.post("/products", upload.single("image"), c.createProduct);
-router.put("/products/:id", upload.single("image"), c.updateProduct);
-router.delete("/products/:id", c.deleteProduct);
-router.put("/products/:id/favorite", c.toggleFavorite);
+// ✅ Change "/products" to "/"
+router.get("/", c.getProducts);
+
+// ✅ Change "/products" to "/"
+router.post("/", upload.single("image"), c.createProduct);
+
+// ✅ Change "/products/:id" to "/:id"
+router.put("/:id", upload.single("image"), c.updateProduct);
+
+// ✅ Change "/products/:id" to "/:id"
+router.delete("/:id", c.deleteProduct);
+
+// ✅ Change "/products/:id/favorite" to "/:id/favorite"
+router.put("/:id/favorite", c.toggleFavorite);
 
 module.exports = router;
