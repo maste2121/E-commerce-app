@@ -13,11 +13,7 @@ class UserController extends GetxController {
   void onInit() {
     super.onInit();
     // Adjust base URL for emulator or desktop
-    if (Platform.isAndroid) {
-      baseUrl = "https://e-commerce-app-api-hvdc.onrender.com";
-    } else {
-      baseUrl = "https://e-commerce-app-api-hvdc.onrender.com";
-    }
+    baseUrl = "https://e-commerce-app-api-hvdc.onrender.com";
     fetchUsers();
   }
 
