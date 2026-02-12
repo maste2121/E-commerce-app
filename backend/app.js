@@ -4,18 +4,19 @@ const path = require("path");
 
 const app = express();
 
+// Middleware
 app.use(cors());
 app.use(express.json());
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-// Correct imports with actual filenames
-// app.use(require("./routes/productRoutes"));
-// app.use(require("./routes/userRoutes"));
-// app.use(require("./routes/orderRoutes"));
+// 1. Health Check Route (Fixes Render "Bad Gateway" & Port Scan issues)
+app.get("/", (req, res) => {
+  res.status(200).send("API is running...");
+});
 
-// Open app.js and change these lines:
-
-// app.js
+// 2. Prefixed Routes (Matches your Flutter paths: /users, /orders, /products)
 app.use("/products", require("./routes/productRoutes"));
 app.use("/users", require("./routes/userRoutes"));
-app.use("/orders", require("./routes/orderRoutes")); // <--- This fixes the 404 // This adds the "/orders" prefixmodule.exports = app;
+app.use("/orders", require("./routes/orderRoutes"));
+
+module.exports = app;
